@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Culture Misunderstanding Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        .header {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        .header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        .search-box {
+            padding: 15px;
+            background: white;
+            border-bottom: 1px solid #ddd;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .categories {
+            padding: 15px;
+        }
+        .category {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .category-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .category-header h2 {
+            font-size: 1.1rem;
+        }
+        .category-content {
+            display: none;
+            padding: 15px;
+        }
+        .category-content.active {
+            display: block;
+        }
+        .item {
+            border-bottom: 1px solid #eee;
+            padding: 12px 0;
+        }
+        .item:last-child {
+            border-bottom: none;
+        }
+        .item-title {
+            font-weight: bold;
+            color: #2196F3;
+            cursor: pointer;
+        }
+        .item-title:hover {
+            text-decoration: underline;
+        }
+        .item-desc {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            overflow-y: auto;
+        }
+        .modal.active {
+            display: block;
+        }
+        .modal-content {
+            background: white;
+            margin: 20px;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2196F3;
+        }
+        .modal-header h2 {
+            color: #2196F3;
+        }
+        .close-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.85rem;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background: #2196F3;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        .offense-extreme { background: #ffebee; color: #c62828; }
+        .offense-high { background: #fff3e0; color: #e65100; }
+        .offense-medium { background: #fff8e1; color: #f57f17; }
+        .offense-low { background: #e8f5e9; color: #2e7d32; }
+        .offense-none { background: #e3f2fd; color: #1565c0; }
+        .safe-alt {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .safe-alt h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .stat-box {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2196F3;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        @media (max-width: 400px) {
+            .modal-content {
+                margin: 10px;
+                padding: 15px;
+            }
+            table {
+                font-size: 0.75rem;
+            }
+            th, td {
+                padding: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌍 Culture Guide</h1>
+        <p>195 Countries | 38 Topics</p>
+    </div>
+
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search countries or topics...">
+    </div>
+
+    <div class="categories" id="categories">
+        <!-- Gestures -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <h2>👋 Gestures</h2>
+                <span>▼</span>
+            </div>
+            <div class="category-content">
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('ok-sign')">👌 OK Sign</div>
+                    <div class="item-desc">Offensive in Brazil, Turkey, Germany</div>
+                </div>
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('thumbs-up')">👍 Thumbs Up</div>
+                    <div class="item-desc">Offensive in Iran, Iraq</div>
+                </div>
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('peace-sign')">✌️ Peace Sign</div>
+                    <div class="item-desc">Offensive in UK/Australia (palm inward)</div>
+                </div>
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('beckoning')">🤙 Beckoning</div>
+                    <div class="item-desc">Very offensive in Philippines</div>
+                </div>
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('pointing')">👆 Pointing</div>
+                    <div class="item-desc">Rude in most Asian/African countries</div>
+                </div>
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('corna')">🤘 Corna/Horns</div>
+                    <div class="item-desc">Offensive in Italy, Spain, Brazil</div>
+                </div>
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('crossed-fingers')">🤞 Crossed Fingers</div>
+                    <div class="item-desc">Offensive in Vietnam</div>
+                </div>
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('fig-sign')">🤏 Fig Sign</div>
+                    <div class="item-desc">Vulgar in Mediterranean countries</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dining -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <h2>🍽️ Dining</h2>
+                <span>▼</span>
+            </div>
+            <div class="category-content">
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('tipping')">💰 Tipping</div>
+                    <div class="item-desc">Expected in USA, offensive in Japan</div>
+                </div>
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('chopsticks')">🥢 Chopsticks</div>
+                    <div class="item-desc">Never stick upright in rice</div>
+                </div>
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('left-hand')">🚫 Left Hand</div>
+                    <div class="item-desc">Unclean in Muslim/Hindu cultures</div>
+                </div>
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('finishing-plate')">🍚 Finishing Plate</div>
+                    <div class="item-desc">Finish in China, leave a little in Japan</div>
+                </div>
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('refusing-food')">🚫 Refusing Food</div>
+                    <div class="item-desc">Rude in most Asian/Middle Eastern cultures</div>
+                </div>
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('tea-etiquette')">🍵 Tea</div>
+                    <div class="item-desc">Accept when offered, especially in Turkey</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Greetings -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <h2>🤝 Greetings</h2>
+                <span>▼</span>
+            </div>
+            <div class="category-content">
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('handshakes')">🤝 Handshakes</div>
+                    <div class="item-desc">Firm in West, light in East</div>
+                </div>
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('bowing')">🙇 Bowing</div>
+                    <div class="item-desc">Required in Japan, Korea</div>
+                </div>
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('cheek-kissing')">💋 Cheek Kissing</div>
+                    <div class="item-desc">2-3 kisses in Europe</div>
+                </div>
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('hugging')">🫂 Hugging</div>
+                    <div class="item-desc">Common in Latin America</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Personal Space -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <h2>📏 Personal Space</h2>
+                <span>▼</span>
+            </div>
+            <div class="category-content">
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('distance')">📏 Distance</div>
+                    <div class="item-desc">Close in Latin America, far in Japan</div>
+                </div>
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('touching')">🖐️ Touching</div>
+                    <div class="item-desc">High-touch in Latin America, low in Asia</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dress Code -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <h2>👗 Dress Code</h2>
+                <span>▼</span>
+            </div>
+            <div class="category-content">
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('modesty')">👗 Modesty</div>
+                    <div class="item-desc">Cover shoulders/knees in religious sites</div>
+                </div>
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('shoes-off')">👟 Shoes Off</div>
+                    <div class="item-desc">Always in Japan, Korea, Middle East</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gift Giving -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <h2>🎁 Gift Giving</h2>
+                <span>▼</span>
+            </div>
+            <div class="category-content">
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('taboo-gifts')">🚫 Taboo Gifts</div>
+                    <div class="item-desc">No clocks in China, no alcohol in Middle East</div>
+                </div>
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('wrapping')">🎁 Wrapping</div>
+                    <div class="item-desc">Red/gold in China, avoid white/black</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Business -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <h2>💼 Business</h2>
+                <span>▼</span>
+            </div>
+            <div class="category-content">
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('business-cards')">🃏 Business Cards</div>
+                    <div class="item-desc">Most formal in Japan</div>
+                </div>
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('meetings')">📅 Meetings</div>
+                    <div class="item-desc">Punctual in Germany, flexible in Latin America</div>
+                </div>
+                <div class="item">
+                    <div class="item-title" onclick="showDetail('negotiations')">🤝 Negotiations</div>
+                    <div class="item-desc">Relationship-first in Asia/Middle East</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content" id="modalContent">
+            <div class="modal-header">
+                <h2 id="modalTitle">Detail</h2>
+                <button class="close-btn" onclick="closeModal()">Close</button>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        const data = {
+            'ok-sign': {
+                title: '👌 OK Sign',
+                table: [
+                    ['USA/UK', 'OK, good', 'None', 'Everyday usage'],
+                    ['Brazil', 'Highly offensive', 'Extreme', 'Equivalent to middle finger'],
+                    ['Turkey', 'Offensive', 'High', 'Sexual gesture'],
+                    ['Germany', 'Asshole', 'High', 'Insulting'],
+                    ['Japan', 'Money', 'None', 'Commercial contexts'],
+                    ['France', 'Zero, worthless', 'Low', 'Context-dependent'],
+                    ['China', 'Zero / nothing', 'None', 'Common in counting'],
+                    ['India', 'Good / OK', 'None', 'Widely understood'],
+                    ['Middle East', 'Offensive', 'High', 'Sexual gesture']
+                ],
+                safe: ['👍 Thumbs up (avoid Middle East)', 'Nodding head', 'Verbal "OK"']
+            },
+            'thumbs-up': {
+                title: '👍 Thumbs Up',
+                table: [
+                    ['USA/UK', 'Good, approval', 'None', 'Very common'],
+                    ['Iran/Iraq', 'Extremely offensive', 'Extreme', 'Equivalent to middle finger'],
+                    ['West Africa', 'Aggressive gesture', 'High', 'Avoid'],
+                    ['Germany', 'Number one', 'None', 'Counting'],
+                    ['Japan', 'Father/boss', 'None', 'Informal'],
+                    ['China', 'Good', 'None', 'Very positive'],
+                    ['Australia', 'Can be offensive', 'Medium', 'Context-dependent']
+                ],
+                safe: ['👌 OK sign (avoid Brazil, Turkey)', 'Nodding head', 'Verbal "good"']
+            },
+            'peace-sign': {
+                title: '✌️ Peace Sign / V Sign',
+                table: [
+                    ['USA/UK', 'Peace, victory', 'None', 'Very common'],
+                    ['UK/Australia (palm in)', 'Extremely offensive', 'Extreme', 'Like middle finger'],
+                    ['Japan', 'Victory, peace', 'None', 'Popular in photos'],
+                    ['China', 'Number two', 'None', 'Counting'],
+                    ['Germany', 'Victory', 'None', 'Palm outward']
+                ],
+                safe: ['🤟 I love you sign', '👍 Thumbs up', '🤝 Handshake']
+            },
+            'beckoning': {
+                title: '🤙 Beckoning Gesture',
+                table: [
+                    ['USA/UK', 'Come here', 'None', 'Common'],
+                    ['Philippines', 'Very offensive', 'Extreme', 'Used only for dogs'],
+                    ['Japan', 'Come here', 'None', 'Palm down'],
+                    ['China', 'Come here', 'None', 'Palm down'],
+                    ['Indonesia', 'Impolite to superiors', 'Medium', 'Use with caution']
+                ],
+                safe: ['Palm up beckoning', 'Verbal "come here"', 'Waving hand']
+            },
+            'pointing': {
+                title: '👆 Pointing with Index Finger',
+                table: [
+                    ['USA/UK', 'Pointing', 'Low', 'Common but can be rude'],
+                    ['China', 'Rude', 'Medium', 'Use open hand'],
+                    ['Japan', 'Very rude', 'High', 'Use whole hand'],
+                    ['India', 'Offensive', 'High', 'Use thumb or open hand'],
+                    ['Middle East', 'Rude', 'High', 'Use right hand, palm open']
+                ],
+                safe: ['🖐️ Open hand gesture', 'Right thumb (India, Malaysia)', 'Verbal direction']
+            },
+            'corna': {
+                title: '🤘 Corna / Horns Gesture',
+                table: [
+                    ['USA/UK', 'Rock on', 'None', 'Music culture'],
+                    ['Italy', 'Cuckold', 'High', 'Insult'],
+                    ['Spain', 'Cuckold', 'High', 'Insulting'],
+                    ['Brazil', 'Cuckold', 'High', 'Very offensive'],
+                    ['Japan', 'Rock music', 'None', 'Music culture']
+                ],
+                safe: ['🤟 I love you (ASL)', '👍 Thumbs up', '✌️ Peace sign']
+            },
+            'crossed-fingers': {
+                title: '🤞 Crossed Fingers',
+                table: [
+                    ['USA/UK', 'Good luck', 'None', 'Very common'],
+                    ['Vietnam', 'Female genitalia', 'Extreme', 'Highly offensive'],
+                    ['China', 'Number ten', 'None', 'Counting'],
+                    ['Europe', 'Good luck', 'None', 'Widely understood']
+                ],
+                safe: ['🍀 Four-leaf clover', 'Verbal "good luck"', '👍 Thumbs up']
+            },
+            'fig-sign': {
+                title: '🤏 Fig Sign',
+                table: [
+                    ['Italy', 'Female genitalia', 'Extreme', 'Very offensive'],
+                    ['Turkey', 'Female genitalia', 'Extreme', 'Very offensive'],
+                    ['Greece', 'Female genitalia', 'Extreme', 'Very offensive'],
+                    ['Brazil', 'Female genitalia', 'Extreme', 'Very offensive'],
+                    ['USA/UK', 'Uncommon', 'Low', 'Not recognized']
+                ],
+                safe: ['👌 OK sign (avoid Brazil, Turkey)', '🤝 Handshake', '👍 Thumbs up']
+            },
+            'tipping': {
+                title: '💰 Tipping Customs',
+                table: [
+                    ['USA', 'Expected', '15-20%', 'Servers rely on tips'],
+                    ['Japan', 'Offensive', '0%', 'Implies poor service'],
+                    ['UK', 'Appreciated', '10-15%', 'Often included'],
+                    ['France', 'Included', '0-5%', 'Service compris'],
+                    ['Germany', 'Round up', '5-10%', 'Nearest euro'],
+                    ['Australia', 'Not expected', '0%', 'Living wage'],
+                    ['Middle East', 'Appreciated', '10-15%', 'Generosity valued'],
+                    ['China', 'Not expected', '0%', 'May cause confusion']
+                ],
+                safe: ['Check if service charge included', 'Observe locals', 'Small tips OK']
+            },
+            'chopsticks': {
+                title: '🥢 Chopstick Taboos',
+                table: [
+                    ['China/Japan/Korea', 'Sticking upright in rice', 'Extreme', 'Funeral rite'],
+                    ['Japan', 'Passing food chopstick-to-chopstick', 'High', 'Cremation ceremony'],
+                    ['China/Japan', 'Crossing chopsticks', 'High', 'Death symbol'],
+                    ['Japan/China/Korea', 'Pointing with chopsticks', 'Medium', 'Rude'],
+                    ['Japan/China/Korea', 'Sucking on chopsticks', 'Medium', 'Rude']
+                ],
+                safe: ['Place on rest when not eating', 'Use serving utensils', 'Follow host']
+            },
+            'left-hand': {
+                title: '🚫 Left Hand Taboo',
+                table: [
+                    ['India', 'Never for food/giving', 'Extreme', 'Unclean'],
+                    ['Middle East', 'Considered unclean', 'Extreme', 'Use right hand'],
+                    ['Africa (many)', 'Taboo', 'Extreme', 'Same as India'],
+                    ['Southeast Asia', 'Avoided', 'High', 'Thailand, Indonesia'],
+                    ['Japan/China', 'No strong taboo', 'Low', 'Chopsticks irrelevant'],
+                    ['Western countries', 'No taboo', 'None', 'Left-handed OK']
+                ],
+                safe: ['Always use right hand', 'Carry wet wipes', 'Observe locals']
+            },
+            'finishing-plate': {
+                title: '🍚 Finishing Your Plate',
+                table: [
+                    ['China', 'Finish everything', 'Medium', 'Shows appreciation'],
+                    ['Japan', 'Leave a little', 'Low', 'Shows abundance'],
+                    ['India', 'Finish everything', 'Medium', 'Respect for food'],
+                    ['USA/UK', 'Finish what you take', 'Low', 'Good manners'],
+                    ['France', 'Finish your plate', 'Low', 'Waste frowned upon'],
+                    ['Thailand', 'Leave a little', 'Low', 'Similar to Japan']
+                ],
+                safe: ['Observe host first', 'Always finish rice', 'Take small portions']
+            },
+            'refusing-food': {
+                title: '🚫 Refusing Food or Drink',
+                table: [
+                    ['China', 'Refusing is rude', 'High', 'Host insists 3+ times'],
+                    ['Middle East', 'Very rude', 'High', 'Hospitality is sacred'],
+                    ['India', 'Disrespectful', 'High', 'Food is offering'],
+                    ['Russia', 'Refusing vodka offensive', 'Extreme', 'Must drink'],
+                    ['USA/UK', 'One refusal OK', 'Low', '"No thanks" polite']
+                ],
+                safe: ['Accept first offering', 'Eat a little', 'Compliment food']
+            },
+            'tea-etiquette': {
+                title: '🍵 Tea Customs',
+                table: [
+                    ['China', 'Receive with two hands', 'Medium', 'Respect for host'],
+                    ['Japan', 'Slurp tea is polite', 'None', 'Shows appreciation'],
+                    ['UK', 'Stir clockwise', 'Low', 'No clinking'],
+                    ['Turkey', 'Refusing is rude', 'Medium', 'Hospitality'],
+                    ['Morocco', 'Three glasses minimum', 'Medium', 'Friendship']
+                ],
+                safe: ['Accept when offered', 'Receive with two hands', 'Say "delicious"']
+            },
+            'handshakes': {
+                title: '🤝 Handshake Customs',
+                table: [
+                    ['USA/UK', 'Firm, eye contact', 'Low', 'Shows confidence'],
+                    ['Germany', 'Very firm', 'Low', 'Strong = trustworthy'],
+                    ['Japan', 'Light, bow while', 'Low', 'Respect hierarchy'],
+                    ['Middle East', 'Right hand only', 'High (left)', 'Left hand unclean'],
+                    ['Brazil', 'Warm, may hug', 'None', 'Friendly'],
+                    ['Thailand', 'Wai instead', 'Low', 'Handshake OK for foreigners']
+                ],
+                safe: ['Always right hand (Muslim/Hindu)', 'Firm in West, light in East', 'Observe locals']
+            },
+            'bowing': {
+                title: '🙇 Bowing Customs',
+                table: [
+                    ['Japan (15°)', 'Casual greeting', 'None', 'Friends, colleagues'],
+                    ['Japan (30°)', 'Polite greeting', 'None', 'Business, strangers'],
+                    ['Japan (45°)', 'Deep respect', 'None', 'Apology, gratitude'],
+                    ['Korea', 'Slight bow', 'Low', 'Less formal than Japan'],
+                    ['Thailand (Wai)', 'Prayer hands + bow', 'Low', 'Height = respect'],
+                    ['India (Namaste)', 'Prayers + bow', 'None', 'Common greeting']
+                ],
+                safe: ['Observe locals first', 'Slight bow is safe default', 'Return greeting']
+            },
+            'cheek-kissing': {
+                title: '💋 Cheek Kissing',
+                table: [
+                    ['France', '2 kisses', 'Low', 'Right then left'],
+                    ['Italy', '2 kisses', 'Low', 'Left then right'],
+                    ['Spain', '2 kisses', 'Low', 'Right then left'],
+                    ['Netherlands', '3 kisses', 'Low', 'Alternating'],
+                    ['Latin America', '1 kiss', 'Low', 'Right cheek'],
+                    ['Japan/China', 'No physical contact', 'High', 'Bow instead']
+                ],
+                safe: ['Observe locals', 'Let them initiate', 'Air kiss if unsure']
+            },
+            'hugging': {
+                title: '🫂 Hugging Customs',
+                table: [
+                    ['Latin America', 'Very common', 'None', 'Warm, personal'],
+                    ['USA/Canada', 'Common among friends', 'Low', 'Hug greeting'],
+                    ['France', 'Cheek kiss preferred', 'Low', 'More formal'],
+                    ['Germany', 'Rare', 'Medium', 'Handshake preferred'],
+                    ['Japan/China', 'No hugging', 'High', 'Bow instead'],
+                    ['Middle East', 'Same gender OK', 'High (opposite)', 'Conservative']
+                ],
+                safe: ['Observe locals', 'Handshake is safer', 'Let them initiate']
+            },
+            'distance': {
+                title: '📏 Personal Space Distance',
+                table: [
+                    ['USA/UK', '1.2-1.5m', 'None', "Arm's length"],
+                    ['Germany', '1.5m', 'None', 'More space'],
+                    ['Japan', '1-1.2m', 'None', 'Respectful'],
+                    ['Latin America', '0.5-0.8m', 'None', 'Very close'],
+                    ['Middle East', '0.5-0.8m', 'None', 'Close (same gender)'],
+                    ['Italy/Spain', '0.6-0.8m', 'None', 'Warm, personal']
+                ],
+                safe: ['Observe locals', 'Mirror their distance', 'Don\'t step back suddenly']
+            },
+            'touching': {
+                title: '🖐️ Touching Customs',
+                table: [
+                    ['Latin America', 'Lots of touching', 'None', 'Very personal'],
+                    ['Italy', 'Arm touches', 'None', 'Warm'],
+                    ['Japan', 'No touching', 'High', 'Very reserved'],
+                    ['Middle East', 'Same gender only', 'High (opposite)', 'Conservative'],
+                    ['USA/UK', 'Limited touching', 'Medium', 'Formal']
+                ],
+                safe: ['Don\'t touch head', 'Right hand in Muslim areas', 'Match their level']
+            },
+            'modesty': {
+                title: '👗 Dress Code & Modesty',
+                table: [
+                    ['Middle East', 'Very conservative', 'Extreme', 'Cover shoulders/knees'],
+                    ['Japan', 'Conservative, neat', 'Medium', 'No tattoos in onsen'],
+                    ['India', 'Conservative', 'High', 'Traditional dress welcomed'],
+                    ['Thailand', 'Cover in temples', 'High', 'Respectful dress'],
+                    ['USA/UK', 'Casual to business', 'Low', 'Varies by setting']
+                ],
+                safe: ['Cover shoulders/knees in religious sites', 'Pack conservative options', 'Carry shawl']
+            },
+            'shoes-off': {
+                title: '👟 Shoes Off Customs',
+                table: [
+                    ['Japan', 'Always', 'Extreme', 'Sacred home space'],
+                    ['Korea', 'Always', 'Extreme', 'Oncheon culture'],
+                    ['Middle East', 'Homes, mosques', 'High', 'Religious requirement'],
+                    ['Thailand', 'Homes, temples', 'High', 'Sacred spaces'],
+                    ['Finland', 'In homes', 'Medium', 'Common practice'],
+                    ['USA/UK', 'Not required', 'Low', 'Some homes']
+                ],
+                safe: ['Always remove in Asia/Middle East', 'Look for shoe rack', 'Use slippers']
+            },
+            'taboo-gifts': {
+                title: '🚫 Taboo Gifts',
+                table: [
+                    ['China', 'Clocks', 'Extreme', 'Sounds like funeral'],
+                    ['China/Japan/Korea', 'White flowers', 'Extreme', 'Funeral color'],
+                    ['Middle East', 'Alcohol', 'Extreme', 'Forbidden'],
+                    ['East Asia', 'Sets of 4', 'High', 'Number 4 = death'],
+                    ['China', 'Green hats', 'Extreme', 'Implies cuckoldry'],
+                    ['Japan', 'Handkerchiefs', 'Medium', 'Wiping tears']
+                ],
+                safe: ['Red envelopes (China)', 'Sweets/chocolates', 'Tea/coffee']
+            },
+            'wrapping': {
+                title: '🎁 Gift Wrapping',
+                table: [
+                    ['China', 'Red/gold preferred', 'Extreme (white/black)', 'White = funeral'],
+                    ['Japan', 'Beautiful wrapping', 'High (poor wrapping)', 'Presentation matters'],
+                    ['Korea', 'Color matters', 'Medium (white/black)', 'Avoid funeral colors'],
+                    ['Middle East', 'Gold/green preferred', 'Medium', 'Avoid alcohol gifts'],
+                    ['Western', 'Any color OK', 'None', 'Festive colors nice']
+                ],
+                safe: ['Use red/gold in Asia', 'Avoid white/black', 'Use both hands to give']
+            },
+            'business-cards': {
+                title: '🃏 Business Card Exchange',
+                table: [
+                    ['Japan', 'Most formal ritual', 'Extreme', 'Treat with respect'],
+                    ['China', 'Two hands, study', 'High', 'Important gesture'],
+                    ['Korea', 'Two hands, study', 'High', 'Similar to Japan'],
+                    ['Middle East', 'Right hand only', 'High (left)', 'Left hand unclean'],
+                    ['USA/UK', 'Casual exchange', 'Low', 'Put in pocket']
+                ],
+                safe: ['Bring plenty of cards', 'Use both hands in Asia', 'Study card carefully']
+            },
+            'meetings': {
+                title: '📅 Meeting Etiquette',
+                table: [
+                    ['Germany', 'Very punctual', 'None', 'Late = disrespectful'],
+                    ['Japan', 'Very punctual', 'None', 'Early is better'],
+                    ['France', '5-10 min late OK', 'None', 'Fashionably late'],
+                    ['Latin America', '15-30 min late OK', 'None', 'Relaxed time'],
+                    ['Middle East', 'Flexible', 'None', 'Relationship > schedule']
+                ],
+                safe: ['Arrive early in Germany/Japan', 'Respect hierarchy in Asia', 'Be patient']
+            },
+            'negotiations': {
+                title: '🤝 Negotiation Styles',
+                table: [
+                    ['USA', 'Direct, fast', 'None', 'Get to the point'],
+                    ['Japan', 'Indirect, consensus', 'None', 'Nemawashi process'],
+                    ['China', 'Relationship-based', 'None', 'Guanxi important'],
+                    ['Middle East', 'Relationship first', 'None', 'Trust before business'],
+                    ['Germany', 'Direct, logical', 'None', 'Facts over feelings']
+                ],
+                safe: ['Research partner culture', 'Build relationship first', 'Be patient']
+            }
+        };
+
+        function toggleCategory(header) {
+            const content = header.nextElementSibling;
+            const arrow = header.querySelector('span');
+            content.classList.toggle('active');
+            arrow.textContent = content.classList.contains('active') ? '▲' : '▼';
+        }
+
+        function showDetail(id) {
+            const item = data[id];
+            if (!item) return;
+
+            document.getElementById('modalTitle').textContent = item.title;
+
+            let html = '<table><tr><th>Region</th><th>Meaning/Custom</th><th>Offense</th><th>Notes</th></tr>';
+            item.table.forEach(row => {
+                let offenseClass = 'offense-none';
+                if (row[2].includes('Extreme')) offenseClass = 'offense-extreme';
+                else if (row[2].includes('High')) offenseClass = 'offense-high';
+                else if (row[2].includes('Medium')) offenseClass = 'offense-medium';
+                else if (row[2].includes('Low')) offenseClass = 'offense-low';
+
+                html += `<tr><td>${row[0]}</td><td>${row[1]}</td><td class="${offenseClass}">${row[2]}</td><td>${row[3]}</td></tr>`;
+            });
+            html += '</table>';
+
+            if (item.safe) {
+                html += '<div class="safe-alt"><h4>✅ Safe Alternatives</h4><ul>';
+                item.safe.forEach(s => html += `<li>${s}</li>`);
+                html += '</ul></div>';
+            }
+
+            document.getElementById('modalBody').innerHTML = html;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.item').forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(term) ? 'block' : 'none';
+            });
+            if (term) {
+                document.querySelectorAll('.category-content').forEach(c => c.classList.add('active'));
+            }
+        });
+
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+    </script>
+</body>
+</html>

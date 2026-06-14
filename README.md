@@ -23,6 +23,16 @@ A collaborative, community-driven guide to cultural gestures, customs, and pract
 |-------|-------------|
 | [Tipping 💰](dining/tipping.md) | Tipping customs worldwide |
 | [Chopsticks 🥢](dining/chopsticks.md) | Chopstick etiquette across Asia |
+| [Eating with Hands 🍽️](dining/eating-with-hands.md) | Right hand rules across cultures |
+| [Left Hand Taboo 🚫](dining/left-hand-taboo.md) | Why left hand is unclean in many cultures |
+| [Finishing Your Plate 🍚](dining/finishing-plate.md) | To finish or leave a little? |
+| [Refusing Food 🚫](dining/refusing-food.md) | Why refusing food is rude in many cultures |
+| [Bread Etiquette 🍞](dining/bread-etiquette.md) | How to eat bread across cultures |
+| [Milk with Meals 🥛](dining/milk-with-meals.md) | Dairy customs worldwide |
+| [Rice Etiquette 🍚](dining/rice-etiquette.md) | Rice taboos and traditions |
+| [Tea Etiquette 🍵](dining/tea-etiquette.md) | Tea customs from China to Turkey |
+| [Soup Etiquette 🍲](dining/soup-etiquette.md) | To slurp or not to slurp? |
+| [Dessert Customs 🍰](dining/dessert-customs.md) | Sweet endings around the world |
 
 ## 🤝 Contributing
 
